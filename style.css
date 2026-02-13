@@ -48,6 +48,10 @@ nav .logo {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 nav ul {
@@ -104,12 +108,13 @@ nav a:hover {
     font-size: 3.5rem;
     margin-bottom: 1rem;
     animation: fadeInUp 1s;
+    color: var(--accent);
 }
 
 .hero p {
     font-size: 1.5rem;
     margin-bottom: 2rem;
-    color: #b0b0c0;
+    color: var(--accent);
     animation: fadeInUp 1s 0.2s both;
 }
 
@@ -411,4 +416,56 @@ footer {
     .works-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Qualification Section */
+.qualification-table {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.qualification-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-weight: 600;
+    padding: 1.5rem;
+    gap: 1rem;
+}
+
+.qualification-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding: 1.5rem;
+    gap: 1rem;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s;
+}
+
+.qualification-row:last-child {
+    border-bottom: none;
+}
+
+.qualification-row:hover {
+    background: #f9f9f9;
+}
+
+.qualification-col-name {
+    color: var(--dark);
+    font-weight: 500;
+}
+
+.qualification-col-date {
+    color: var(--primary);
+    text-align: right;
+    font-weight: 600;
+}
+
+.qualification-header .qualification-col-date {
+    color: white;
 }
