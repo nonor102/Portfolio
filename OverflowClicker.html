@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OverflowClicker - nonor102 Portfolio</title>
+    <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+    <nav class="detail-nav">
+        <div class="container">
+            <a href="index.html" class="logo">nonor102</a>
+            <a href="index.html#works" class="back-link">← Works に戻る</a>
+        </div>
+    </nav>
+
+    <section class="detail-hero">
+        <div class="container">
+            <h1>OverflowClicker</h1>
+            <p class="subtitle">C#の数値型オーバーフローを活用したクリッカー×インクリメンタルゲーム</p>
+            <div class="tags">
+                <span class="tag">Unity</span>
+                <span class="tag">C#</span>
+                <span class="tag">2D</span>
+                <span class="tag">クリッカー</span>
+                <span class="tag">インクリメンタル</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-content">
+        <div class="container">
+            <div class="detail-grid">
+                <!-- 左: スクリーンショットギャラリー -->
+                <div class="detail-gallery">
+                    <div class="gallery-main">
+                        <img id="mainImage" src="img/OFC/welcome.png" alt="OverflowClicker スクリーンショット">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="img/OFC/welcome.png" alt="ウェルカム画面" class="active" onclick="changeImage(this)">
+                        <img src="img/OFC/Alpha.png" alt="Alpha画面" onclick="changeImage(this)">
+                        <img src="img/OFC/Beta.png" alt="Beta画面" onclick="changeImage(this)">
+                    </div>
+                </div>
+
+                <!-- 右: プロジェクト情報 -->
+                <div class="detail-info">
+                    <div class="info-section">
+                        <h2>プロジェクト概要</h2>
+                        <div class="project-meta">
+                            <span class="meta-label">ジャンル</span>
+                            <span class="meta-value">クリッカー / インクリメンタルゲーム</span>
+                            <span class="meta-label">開発環境</span>
+                            <span class="meta-value">Unity / C#</span>
+                            <span class="meta-label">プラットフォーム</span>
+                            <span class="meta-value">PC (Windows)</span>
+                            <span class="meta-label">開発人数</span>
+                            <span class="meta-value">1人（個人開発）</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h2>主な特徴</h2>
+                        <ul class="features-list">
+                            <li>C#の数値型（byte, short, int, long など）のオーバーフローをゲーム進行の中心に据えた設計</li>
+                            <li>オーバーフロー後、別の数値型でスコアを獲得し、さらにその型でのオーバーフローを目指す</li>
+                            <li>ゲームの進行につれてオーバーフローまでの道のりが短くなるバランス調整</li>
+                            <li>凄まじいインフレーションによる爽快なゲーム体験</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-actions">
+                        <a href="#" class="detail-btn-primary">GitHub で見る</a>
+                        <a href="#" class="detail-btn-secondary">デモを試す</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 詳細説明 -->
+            <div class="detail-full-section">
+                <h2>作品について</h2>
+                <p>
+                    OverflowClickerは、UnityとC#を用いて開発した2Dクリッカーゲームです。
+                    クリッカーゲームとインクリメンタルゲームの要素を組み合わせ、C#の数値型のオーバーフローという仕組みをゲームの核として活用しています。
+                </p>
+                <p>
+                    プレイヤーはクリックやオートクリッカーでスコアを増加させ、数値型の上限に到達するとオーバーフローが発生します。
+                    オーバーフロー後は新たな数値型のスコアを獲得でき、さらにその型でオーバーフローさせることがゲームの目的となります。
+                </p>
+                <p>
+                    ゲームバランスの設計にこだわり、進行するにつれてオーバーフローまでの道のりが短くなるように調整しました。
+                    これにより、凄まじいインフレーションによる爽快感のあるゲーム体験を提供し、プレイヤーに「もう少し先まで進めたい」と感じさせるサイクルを実現しています。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="detail-footer">
+        <div class="container">
+            <p>&copy; 2026 nonor102. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function changeImage(thumb) {
+            document.getElementById('mainImage').src = thumb.src;
+            document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoogolWheel - nonor102 Portfolio</title>
+    <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+    <nav class="detail-nav">
+        <div class="container">
+            <a href="index.html" class="logo">nonor102</a>
+            <a href="index.html#works" class="back-link">← Works に戻る</a>
+        </div>
+    </nav>
+
+    <section class="detail-hero">
+        <div class="container">
+            <h1>GoogolWheel</h1>
+            <p class="subtitle">プロジェクトのサブタイトルをここに入力してください</p>
+            <div class="tags">
+                <span class="tag">Unity</span>
+                <span class="tag">C#</span>
+                <span class="tag">VR</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-content">
+        <div class="container">
+            <div class="detail-grid">
+                <!-- 左: スクリーンショットギャラリー -->
+                <div class="detail-gallery">
+                    <div class="gallery-main">
+                        <img id="mainImage" src="img/myIcon.jpg" alt="GoogolWheel スクリーンショット">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="img/myIcon.jpg" alt="メイン画像" class="active" onclick="changeImage(this)">
+                    </div>
+                </div>
+
+                <!-- 右: プロジェクト情報 -->
+                <div class="detail-info">
+                    <div class="info-section">
+                        <h2>プロジェクト概要</h2>
+                        <div class="project-meta">
+                            <span class="meta-label">ジャンル</span>
+                            <span class="meta-value">（ジャンルを入力）</span>
+                            <span class="meta-label">開発環境</span>
+                            <span class="meta-value">Unity / C#</span>
+                            <span class="meta-label">プラットフォーム</span>
+                            <span class="meta-value">（プラットフォームを入力）</span>
+                            <span class="meta-label">開発人数</span>
+                            <span class="meta-value">（開発人数を入力）</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h2>主な特徴</h2>
+                        <ul class="features-list">
+                            <li>特徴1をここに記載</li>
+                            <li>特徴2をここに記載</li>
+                            <li>特徴3をここに記載</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-actions">
+                        <a href="#" class="detail-btn-primary">GitHub で見る</a>
+                        <a href="#" class="detail-btn-secondary">デモを試す</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 詳細説明 -->
+            <div class="detail-full-section">
+                <h2>作品について</h2>
+                <p>
+                    GoogolWheelの詳細な説明をここに記載してください。
+                    どのような機能を実装したか、工夫した点などを説明します。
+                </p>
+                <p>
+                    開発の経緯や技術的な挑戦についても記載できます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="detail-footer">
+        <div class="container">
+            <p>&copy; 2026 nonor102. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function changeImage(thumb) {
+            document.getElementById('mainImage').src = thumb.src;
+            document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -364,6 +364,25 @@ section:nth-child(even) {
     color: var(--secondary);
 }
 
+/* Detail Button in Work Card */
+.detail-btn {
+    display: block;
+    text-align: center;
+    padding: 0.7rem 1.5rem;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.detail-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+}
+
 /* Contact Section */
 .contact-content {
     max-width: 600px;
