@@ -42,7 +42,7 @@ body {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    background: white;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
