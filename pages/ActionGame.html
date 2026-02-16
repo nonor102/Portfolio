@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>縦スクロール型2Dアクションゲーム - nonor102 Portfolio</title>
+    <link rel="stylesheet" href="../css/detail.css">
+</head>
+<body>
+    <nav class="detail-nav">
+        <div class="container">
+            <a href="../index.html" class="logo">nonor102</a>
+            <a href="../index.html#works" class="back-link">← Works に戻る</a>
+        </div>
+    </nav>
+
+    <section class="detail-hero">
+        <div class="container">
+            <h1>縦スクロール型2Dアクションゲーム</h1>
+            <p class="subtitle">Unityで開発した縦スクロール型の2Dアクションゲーム</p>
+            <div class="tags">
+                <span class="tag">Unity</span>
+                <span class="tag">C#</span>
+                <span class="tag">2D</span>
+                <span class="tag">アクション</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-content">
+        <div class="container">
+            <div class="detail-grid">
+                <!-- 左: スクリーンショットギャラリー -->
+                <div class="detail-gallery">
+                    <div class="gallery-main">
+                        <img id="mainImage" src="../img/actiongame/img.png" alt="縦スクロール型2Dアクションゲーム スクリーンショット">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="../img/actiongame/img.png" alt="スクリーンショット" class="active" onclick="changeImage(this)">
+                    </div>
+                </div>
+
+                <!-- 右: プロジェクト情報 -->
+                <div class="detail-info">
+                    <div class="info-section">
+                        <h2>プロジェクト概要</h2>
+                        <div class="project-meta">
+                            <span class="meta-label">ジャンル</span>
+                            <span class="meta-value">縦スクロール型2Dアクション</span>
+                            <span class="meta-label">開発環境</span>
+                            <span class="meta-value">Unity / C#</span>
+                            <span class="meta-label">プラットフォーム</span>
+                            <span class="meta-value">PC (Windows)</span>
+                            <span class="meta-label">開発人数</span>
+                            <span class="meta-value">1人（個人開発）</span>
+                            <span class="meta-label">公開状況</span>
+                            <span class="meta-value">非公開</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h2>主な特徴</h2>
+                        <ul class="features-list">
+                            <li>縦スクロール型のステージを進んでいく2Dアクションゲーム</li>
+                            <li>プレイヤーキャラクターを操作してステージを上へと進む</li>
+                            <li>UnityとC#を用いた開発</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-actions">
+                        <span class="detail-btn-secondary" style="opacity: 0.5; cursor: default;">非公開</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 詳細説明 -->
+            <div class="detail-full-section">
+                <h2>作品について</h2>
+                <p>
+                    本作品は、UnityとC#を用いて開発した縦スクロール型の2Dアクションゲームです。
+                    プレイヤーはキャラクターを操作し、ステージを上方向へと進んでいきます。
+                </p>
+                <p>
+                    ※本作品は非公開のため、ソースコードやデモの公開は行っておりません。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="detail-footer">
+        <div class="container">
+            <p>&copy; 2026 nonor102. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function changeImage(thumb) {
+            document.getElementById('mainImage').src = thumb.src;
+            document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+    </script>
+</body>
+</html>
