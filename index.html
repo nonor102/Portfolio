@@ -13,6 +13,8 @@
             <ul>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#qualification">Qualification</a></li>
+                <li><a href="#competitions">Competitions</a></li>
                 <li><a href="#works">Works</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -22,7 +24,6 @@
     <section class="hero">
         <div class="hero-content">
             <h1>PORTFOLIO</h1>
-            <!-- <p></p> -->
             <a href="#works" class="cta">View My Works</a>
         </div>
     </section>
@@ -32,10 +33,15 @@
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
                 <div class="profile-image"><img src="img/myIcon.jpg" alt="nonor102's icon"></div>
-                <div class="about-text">
+                <div class="about-section">
+                    <h3 class="about-name">nonor102 - Ryusei Nonomiya</h3>
+                    <div class="about-text">
                     <p>こんにちは。私は高等専門学校の情報系の学科に所属しています、nonor102です。</p>
+                    <p>2022年度入学、27卒の5年生(2026年4月時点)です。</p>
                     <p>ゲームが好きなので、遊ぶのみならず開発することにも挑戦しています。</p>
                     <p>その他に、C/C++の勉強や、初歩的なLinuxのコマンドの勉強もしています。</p>
+                    <p>コンピュータを利用して様々なことを行う部活動に所属しており、その中の活動で共同開発をしたり、コンテストに出場したりするなど、様々な経験を積んでいます。</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,6 +50,10 @@
     <section id="skills">
         <div class="container">
             <h2 class="section-title">Skills</h2>
+            <div class="section-description">
+                <p>ゲーム開発からプログラミング、セキュリティまで、習得した様々なスキルを紹介します。</p>
+                <p>星の数でその技術の練度を表しています。星の数が多いほど、練度が高いことを示します。</p>
+            </div>
             <div class="skills-grid">
                 <div class="skill-card">
                     <h3>Game Development</h3>
@@ -170,6 +180,10 @@
     <section id="qualification">
         <div class="container">
             <h2 class="section-title">Qualification</h2>
+            <div class="section-description">
+                <p>取得した資格・試験合格の記録です。</p>
+                <p>2026年春に応用情報技術者試験、秋に情報処理安全確保支援士試験の受験を考えています。</p>
+            </div>
             <div class="qualification-table">
                 <div class="qualification-header">
                     <div class="qualification-col-name">資格名</div>
@@ -191,27 +205,59 @@
         </div>
     </section>
 
+    <section id="competitions">
+        <div class="container">
+            <h2 class="section-title">Competitions</h2>
+            <div class="section-description">
+                <p>高専機構、または開催地の高等専門学校が主催する大会に出場した成績の記録です。</p>
+                <p>このほかに、オンライン上で実施されているコンテスト(例: AtCoder Beginner Contest)等にも参加していますが、省略しています。</p>
+            </div>
+            <div class="competitions-table">
+                <div class="competitions-header">
+                    <div class="competitions-col-name">大会名</div>
+                    <div class="competitions-col-date">開催年月</div>
+                    <div class="competitions-col-result">成績</div>
+                </div>
+                <div class="competitions-row">
+                    <div class="competitions-col-name">KOSENセキュリティコンテスト2023</div>
+                    <div class="competitions-col-date">2023年11月</div>
+                    <div class="competitions-col-result">チーム出場</div>
+                </div>
+                <div class="competitions-row">
+                    <div class="competitions-col-name">高専プログラミングコンテスト 第36回松江大会 課題部門</div>
+                    <div class="competitions-col-date">2025年10月</div>
+                    <div class="competitions-col-result">敢闘賞</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="works">
         <div class="container">
             <h2 class="section-title">Works</h2>
+            <div class="section-description">
+                <p>制作したゲームやアプリケーションなど、代表的なプロジェクトを紹介します。</p>
+            </div>
+            
             <div class="works-grid">
                 <div class="work-card">
                     <div class="work-image"><img src="img/OFC/welcome.png" alt="Overflow Clicker's welcome screen"></div>
                     <div class="work-content">
                         <h3>Overflow Clicker</h3>
-                        <p>UnityとC#を用いた2Dゲーム。クリッカーゲームとインクリメンタルゲームを組み合わせたもので、C#の数値型のオーバーフローを利用した。</p>
-                        <p>オーバーフロー後、別の数値型のスコアを得ることができるので、さらにその型でオーバーフローさせることが目的となる。</p>
-                        <p>凄まじいインフレーションにより、爽快なゲーム体験を提供する。</p>
-                        <p>ゲームの進行につれて、オーバーフローまでの道のりが短くなるように設計した。</p>
+                        <p>UnityとC#を用いた2Dゲームです。クリッカーゲームとインクリメンタルゲームを組み合わせたもので、C#の数値型のオーバーフローを利用しています。</p>
+                        <p>オーバーフロー後、別の数値型のスコアを得ることができるので、さらにその型でオーバーフローさせることが目的となります。</p>
+                        <p>凄まじいインフレーションにより、爽快なゲーム体験を提供しています。</p>
+                        <p>ゲームの進行につれて、オーバーフローまでの道のりが短くなるように設計しました。</p>
                         <div class="work-tags">
                             <span class="tag">Unity</span>
                             <span class="tag">C#</span>
                             <span class="tag">2D</span>
                             <span class="tag">クリッカー</span>
+                            <span class="tag">インクリメンタル</span>
                         </div>
                         <div class="work-links">
-                            <a href="#" class="work-link">GitHub →</a>
-                            <a href="#" class="work-link">Demo →</a>
+                            <a href="https://github.com/nonor102/OverflowClicker" target="_blank" class="work-link">GitHub →</a>
+                            <!-- <a href="#" class="work-link">Demo →</a> -->
                         </div>
                         <a href="OverflowClicker.html" class="detail-btn">詳細を見る →</a>
                     </div>

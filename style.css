@@ -48,7 +48,8 @@ nav .logo {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    /* background: linear-gradient(90deg, var(--accent), var(--secondary)); */
+    background: white;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -175,6 +176,17 @@ section:nth-child(even) {
     border-radius: 2px;
 }
 
+.section-description {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+    max-width: 1050px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+}
+
 /* About Section */
 .about-content {
     display: grid;
@@ -196,6 +208,22 @@ section:nth-child(even) {
     color: white;
     margin: 0 auto;
     overflow: hidden;
+}
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.about-name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
 }
 
 .profile-image img {
@@ -507,5 +535,64 @@ footer {
 }
 
 .qualification-header .qualification-col-date {
+    color: white;
+}
+
+/* Competitions Section */
+.competitions-table {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.competitions-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-weight: 600;
+    padding: 1.5rem;
+    gap: 1rem;
+}
+
+.competitions-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 1.5rem;
+    gap: 1rem;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s;
+}
+
+.competitions-row:last-child {
+    border-bottom: none;
+}
+
+.competitions-row:hover {
+    background: #f9f9f9;
+}
+
+.competitions-col-name {
+    color: var(--dark);
+    font-weight: 500;
+}
+
+.competitions-col-date {
+    color: var(--primary);
+    text-align: center;
+    font-weight: 600;
+}
+
+.competitions-col-result {
+    color: var(--primary);
+    text-align: center;
+    font-weight: 600;
+}
+
+.competitions-header .competitions-col-date,
+.competitions-header .competitions-col-result {
     color: white;
 }
