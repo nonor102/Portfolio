@@ -410,6 +410,17 @@ section:nth-child(even) {
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
 }
 
+/* Works Subsection Title */
+.works-subsection-title {
+    font-size: 1.5rem;
+    color: var(--dark);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+}
+
 /* Contact Section */
 .contact-content {
     max-width: 600px;
@@ -446,6 +457,11 @@ section:nth-child(even) {
 
 .contact-icon:hover {
     transform: scale(1.1);
+}
+
+.contact-icon-link {
+    display: block;
+    text-decoration: none;
 }
 
 .contact-item a {
