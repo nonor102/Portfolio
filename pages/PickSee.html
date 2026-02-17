@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PickSee - nonor102 Portfolio</title>
+    <title>Pick & See - nonor102 Portfolio</title>
     <link rel="stylesheet" href="../css/detail.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
 
     <section class="detail-hero">
         <div class="container">
-            <h1>PickSee</h1>
+            <h1>Pick & See</h1>
             <p class="subtitle">ARを活用した環境問題啓発3Dゲーム ― 高専プロコン出場作品</p>
             <div class="tags">
                 <span class="tag">Unity</span>
@@ -35,7 +35,7 @@
                 <!-- 左: スクリーンショットギャラリー -->
                 <div class="detail-gallery">
                     <div class="gallery-main">
-                        <img id="mainImage" src="../img/PickSee/title.png" alt="PickSee スクリーンショット">
+                        <img id="mainImage" src="../img/PickSee/title.png" alt="Pick & See タイトル画面">
                     </div>
                     <div class="gallery-thumbs">
                         <img src="../img/PickSee/title.png" alt="タイトル画面" class="active" onclick="changeImage(this)">
@@ -55,11 +55,11 @@
                             <span class="meta-label">開発環境</span>
                             <span class="meta-value">Unity / C# / Firebase</span>
                             <span class="meta-label">プラットフォーム</span>
-                            <span class="meta-value">スマートフォン (Android / iOS)</span>
+                            <span class="meta-value">スマートフォン(Android)</span>
                             <span class="meta-label">開発人数</span>
-                            <span class="meta-value">5人（チーム開発）</span>
+                            <span class="meta-value">4人(+1人) (チーム開発) </span>
                             <span class="meta-label">大会</span>
-                            <span class="meta-value">第36回 高専プログラミングコンテスト 課題部門</span>
+                            <span class="meta-value">高専プログラミングコンテスト 第36回松江大会 課題部門</span>
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                         <h2>主な特徴</h2>
                         <ul class="features-list">
                             <li>環境問題への意識向上を目的とした教育的ゲームデザイン</li>
-                            <li>AR技術を活用し、現実空間のごみを認識・処分するゲームシステム</li>
+                            <li>AR技術を活用し、現実空間のごみを処分するとゲームが発展するシステム</li>
                             <li>「島」の発展を軸にした育成ゲーム風のゲームサイクル</li>
                             <li>Firebaseを活用したユーザー認証（ログオン / ログイン機能）</li>
                             <li>5人チームでの共同開発によるGitを用いたバージョン管理</li>
@@ -75,8 +75,8 @@
                     </div>
 
                     <div class="detail-actions">
-                        <a href="#" class="detail-btn-primary">GitHub で見る</a>
-                        <a href="#" class="detail-btn-secondary">デモを試す</a>
+                        <a href="https://github.com/maguro256/procon" target="_blank" class="detail-btn-primary">GitHub で見る</a>
+                        <!-- <a href="#" class="detail-btn-secondary">デモを試す</a> -->
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
             <div class="detail-full-section">
                 <h2>作品について</h2>
                 <p>
-                    PickSeeは、第36回高専プログラミングコンテスト 課題部門に出場するために5人チームで共同開発した3Dゲームです。
+                    Pick & Seeは、高専プログラミングコンテスト 第36回松江大会 課題部門に出場するために5人チームで共同開発した3Dゲームです。
                     UnityとC#、そしてAR技術を組み合わせて開発しました。
                 </p>
                 <p>
@@ -95,8 +95,15 @@
                 </p>
                 <p>
                     環境問題への取り組みとして、ポイ捨てされているごみに着目しました。
-                    ARカメラで捉えたごみを処分することでゲーム内の島が発展するシステムを考案・実装し、
+                    ユーザは現実世界のごみの写真を投稿し、AR空間上に自分の好きなアイテムを置くことができます。
+                    他人はその場所でAR空間上にあるアイテムとごみの写真を見ることができ、置いてあるアイテムを自分の島に持ち帰ることもできます。
                     現実世界でのごみ拾いがゲームの進行につながるという仕組みを実現しています。
+                </p>
+                <p>
+                    ごみ拾いだけではなく、もっと深く環境問題について知識を増やしてほしいと考え、ゲーム内には自身の環境的な行動に関するミッションを設けました。
+                    ミッションには「今日のミッション」、「今週のミッション」としてそれぞれ6つずつ用意しました。
+                    「今日のミッション」では、1日のうちに達成できるような簡単な内容を、「今週のミッション」では、1週間かけて達成するような少し難しい内容を設定しました。
+                    これらのミッションには個別にポイントが割り振られており、このポイントを集めることで島の発展に必要なアイテムを獲得できるようにしました。
                 </p>
                 <p>
                     バックエンドにはFirebaseを利用し、ユーザーのログオン・ログイン処理やデータの保存を行いました。
