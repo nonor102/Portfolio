@@ -57,7 +57,7 @@
                             <span class="meta-label">プラットフォーム</span>
                             <span class="meta-value">スマートフォン(Android)</span>
                             <span class="meta-label">開発人数</span>
-                            <span class="meta-value">4人(+1人) (チーム開発) </span>
+                            <span class="meta-value">4人 (チーム開発) </span>
                             <span class="meta-label">大会</span>
                             <span class="meta-value">高専プログラミングコンテスト 第36回松江大会 課題部門</span>
                         </div>
@@ -69,8 +69,8 @@
                             <li>環境問題への意識向上を目的とした教育的ゲームデザイン</li>
                             <li>AR技術を活用し、現実空間のごみを処分するとゲームが発展するシステム</li>
                             <li>「島」の発展を軸にした育成ゲーム風のゲームサイクル</li>
-                            <li>Firebaseを活用したユーザー認証（ログオン / ログイン機能）</li>
-                            <li>5人チームでの共同開発によるGitを用いたバージョン管理</li>
+                            <li>Firebaseを活用したユーザ認証 (ログオン / ログイン機能) </li>
+                            <li>4人チームでの共同開発によるGitを用いたバージョン管理</li>
                         </ul>
                     </div>
 
@@ -85,7 +85,7 @@
             <div class="detail-full-section">
                 <h2>作品について</h2>
                 <p>
-                    Pick & Seeは、高専プログラミングコンテスト 第36回松江大会 課題部門に出場するために5人チームで共同開発した3Dゲームです。
+                    Pick & Seeは、高専プログラミングコンテスト 第36回松江大会 課題部門に出場するために4人チームで共同開発した3Dゲームです。
                     UnityとC#、そしてAR技術を組み合わせて開発しました。
                 </p>
                 <p>
@@ -106,15 +106,19 @@
                     これらのミッションには個別にポイントが割り振られており、このポイントを集めることで島の発展に必要なアイテムを獲得できるようにしました。
                 </p>
                 <p>
-                    バックエンドにはFirebaseを利用し、ユーザーのログオン・ログイン処理やデータの保存を行いました。
+                    バックエンドにはFirebaseを利用し、ユーザのログオン・ログイン処理やデータの保存を行いました。
                     チーム開発ではGitとGitHubを活用してバージョン管理を行い、効率的な開発体制を実現しました。
                 </p>
 
                 <h2>自分の担当した部分</h2>
                 <p>
                     このプロジェクトでは、Firebaseでのアカウント管理とともに、ログイン/新規登録画面の作製を主に行いました。
-                    ユーザーが安全にアカウントを作成・管理できるよう、Firebase Authentication を活用した認証システムを実装しました。
+                    ユーザが安全にアカウントを作成・管理できるよう、Firebase Authentication を活用した認証システムを実装しました。
                     また、ログイン/新規登録画面のUIの設計から実装まで一貫して担当し、直感的で使いやすいログイン体験を提供することにこだわりました。
+                </p>
+                <p>
+                    ユーザの情報の管理(島の情報やミッションの達成状況など)もFirebase Firestoreを用いて実装しました。
+                    ユーザがアイテムの配置などの操作をするたびに、Firestoreからユーザのデータを取得し、ゲーム内での進行状況や島の状態を反映させる仕組みを構築しました。
                 </p>
             </div>
 
@@ -124,61 +128,448 @@
 
                 <!-- コードブロック 1 -->
                 <div class="code-block-wrapper">
-                    <div class="code-block-header">
-                        <span class="filename">ExampleScript.cs</span>
+                    <div class="code-block-header" onclick="toggleCodeBlock(event)">
+                        <div class="code-block-toggle">
+                            <span class="code-toggle-icon">▼</span>
+                            <span class="filename">AuthenticationManager.cs</span>
+                        </div>
                         <span class="language-badge">C#</span>
                     </div>
                     <div class="code-block-body">
-<pre><code><span class="code-comment">// ここにソースコードを貼り付け</span>
-<span class="code-keyword">public class</span> <span class="code-type">ExampleScript</span> : <span class="code-type">MonoBehaviour</span>
+<pre><code><span class="code-keyword">using</span> System.Collections;
+<span class="code-keyword">using</span> System.Collections.Generic;
+<span class="code-keyword">using</span> UnityEngine;
+<span class="code-keyword">using</span> Firebase;
+<span class="code-keyword">using</span> Firebase.Auth;
+<span class="code-keyword">using</span> Firebase.Firestore;
+<span class="code-keyword">using</span> System.Threading.Tasks;
+<span class="code-keyword">using</span> UnityEngine.UI;
+<span class="code-keyword">using</span> Firebase.Extensions;
+<span class="code-keyword">using</span> System;
+<span class="code-keyword">using</span> System.Linq;
+
+[<span class="code-attribute">FirestoreData</span>]
+<span class="code-keyword">public class</span> <span class="code-type">UserInfo</span>
 {
+    [<span class="code-attribute">FirestoreProperty</span>]
+    <span class="code-keyword">public string</span> name { <span class="code-keyword">get</span>; <span class="code-keyword">set</span>; }
+    [<span class="code-attribute">FirestoreProperty</span>]
+    <span class="code-keyword">public int</span> points { <span class="code-keyword">get</span>; <span class="code-keyword">set</span>; }
+    [<span class="code-attribute">FirestoreProperty</span>]
+    <span class="code-keyword">public int</span> prefecture { <span class="code-keyword">get</span>; <span class="code-keyword">set</span>; }
+    [<span class="code-attribute">FirestoreProperty</span>]
+    <span class="code-keyword">public int</span> score { <span class="code-keyword">get</span>; <span class="code-keyword">set</span>; }
+}
+
+<span class="code-keyword">public class</span> <span class="code-type">AuthenticationManager</span> : <span class="code-type">MonoBehaviour</span>
+{
+    <span class="code-keyword">public static</span> <span class="code-type">AuthenticationManager</span> instance;
+
+    <span class="code-keyword">public</span> <span class="code-type">FirebaseAuth</span> auth;
+    <span class="code-keyword">public</span> <span class="code-type">FirebaseFirestore</span> firestore;
+
+    <span class="code-keyword">public</span> <span class="code-type">UserInfo</span> CurrentUserInfo { <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+    <span class="code-keyword">public string</span> userID =&gt; user?.UserId;
+    <span class="code-keyword">public string</span> userName =&gt; CurrentUserInfo?.name;
+
+    <span class="code-keyword">public</span> <span class="code-type">FirebaseUser</span> user { <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+
+    <span class="code-keyword">void</span> <span class="code-method">Awake</span>()
+    {
+        <span class="code-keyword">if</span> (instance == <span class="code-keyword">null</span>)
+        {
+            instance = <span class="code-keyword">this</span>;
+            <span class="code-method">DontDestroyOnLoad</span>(<span class="code-keyword">this</span>.gameObject);
+            <span class="code-method">InitializeFirebase</span>();
+        }
+        <span class="code-keyword">else</span>
+        {
+            <span class="code-method">Destroy</span>(<span class="code-keyword">this</span>.gameObject);
+        }
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">InitializeFirebase</span>()
+    {
+        <span class="code-type">FirebaseApp</span>.<span class="code-method">CheckAndFixDependenciesAsync</span>().<span class="code-method">ContinueWithOnMainThread</span>(task =&gt;
+        {
+            <span class="code-keyword">if</span> (task.Result == <span class="code-type">DependencyStatus</span>.Available)
+            {
+                <span class="code-method">Debug.Log</span>(<span class="code-string">"Firebase is ready."</span>);
+                <span class="code-type">FirebaseApp</span> app = <span class="code-type">FirebaseApp</span>.DefaultInstance;
+                firestore = <span class="code-type">FirebaseFirestore</span>.DefaultInstance;
+                auth = <span class="code-type">FirebaseAuth</span>.DefaultInstance;
+
+                <span class="code-keyword">if</span> (auth.CurrentUser != <span class="code-keyword">null</span>)
+                {
+                    user = auth.CurrentUser;
+                    <span class="code-method">Debug.Log</span>(<span class="code-string">$"既存のセッションを再利用します。 UserID: {user.UserId}"</span>);
+                    <span class="code-method">FetchCurrentUserInfoAsync</span>();
+                }
+            }
+            <span class="code-keyword">else</span>
+            {
+                <span class="code-method">Debug.LogError</span>(<span class="code-string">$"Could not resolve all Firebase dependencies: {task.Result}"</span>);
+            }
+        });
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">ClearLoginState</span>()
+    {
+        user = <span class="code-keyword">null</span>;
+        CurrentUserInfo = <span class="code-keyword">null</span>;
+        <span class="code-method">Debug.Log</span>(<span class="code-string">"AuthenticationManagerのログイン状態をクリアしました。"</span>);
+    }
+
+    <span class="code-keyword">public async Task&lt;UserInfo&gt;</span> <span class="code-method">FetchCurrentUserInfoAsync</span>()
+    {
+        <span class="code-keyword">if</span> (auth.CurrentUser == <span class="code-keyword">null</span> || firestore == <span class="code-keyword">null</span>) { <span class="code-keyword">return null</span>; }
+        <span class="code-keyword">string</span> uid = auth.CurrentUser.UserId;
+        <span class="code-type">DocumentReference</span> docRef = firestore.Collection(<span class="code-string">"userInfo"</span>).<span class="code-method">Document</span>(uid);
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-type">DocumentSnapshot</span> snapshot = <span class="code-keyword">await</span> docRef.<span class="code-method">GetSnapshotAsync</span>();
+            <span class="code-keyword">if</span> (snapshot.Exists)
+            {
+                CurrentUserInfo = snapshot.<span class="code-method">ConvertTo&lt;UserInfo&gt;</span>();
+                <span class="code-method">Debug.Log</span>(<span class="code-string">$"ユーザー情報を取得しました: {CurrentUserInfo.name}"</span>);
+                <span class="code-keyword">return</span> CurrentUserInfo;
+            }
+            <span class="code-keyword">else</span>
+            {
+                <span class="code-method">Debug.LogWarning</span>(<span class="code-string">$"Firestoreにユーザー情報が見つかりません。UID: {uid}"</span>);
+                <span class="code-keyword">return null</span>;
+            }
+        }
+        <span class="code-keyword">catch</span> (<span class="code-type">Exception</span> ex)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"ユーザー情報の取得中にエラーが発生しました: "</span> + ex);
+            <span class="code-keyword">return null</span>;
+        }
+    }
+
+    <span class="code-keyword">public async Task</span> <span class="code-method">SignUpAsync</span>(<span class="code-keyword">string</span> email, <span class="code-keyword">string</span> password, <span class="code-keyword">string</span> name, <span class="code-keyword">int</span> prefectureNumber)
+    {
+        <span class="code-keyword">if</span> (<span class="code-keyword">string</span>.<span class="code-method">IsNullOrEmpty</span>(email) || <span class="code-keyword">string</span>.<span class="code-method">IsNullOrEmpty</span>(password) || <span class="code-keyword">string</span>.<span class="code-method">IsNullOrEmpty</span>(name) || prefectureNumber == <span class="code-number">0</span>)
+        {
+            <span class="code-method">Debug.LogWarning</span>(<span class="code-string">"すべての項目を入力してください。"</span>);
+            <span class="code-keyword">throw new</span> <span class="code-type">System.ArgumentException</span>(<span class="code-string">"入力が不十分です。"</span>);
+        }
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-type">AuthResult</span> authResult = <span class="code-keyword">await</span> auth.<span class="code-method">CreateUserWithEmailAndPasswordAsync</span>(email, password);
+            user = authResult.User;
+            <span class="code-keyword">string</span> uid = user.UserId;
+            <span class="code-type">UserInfo</span> newUserInfo = <span class="code-keyword">new</span> <span class="code-type">UserInfo</span>
+            {
+                name = name,
+                prefecture = prefectureNumber,
+                score = <span class="code-number">0</span>,
+                points = <span class="code-number">0</span>
+            };
+            <span class="code-keyword">await</span> firestore.Collection(<span class="code-string">"userInfo"</span>).<span class="code-method">Document</span>(uid).<span class="code-method">SetAsync</span>(newUserInfo);
+            <span class="code-method">Debug.Log</span>(<span class="code-string">"Firestoreにユーザー情報を登録しました。"</span>);
+        }
+        <span class="code-keyword">catch</span> (<span class="code-type">System.Exception</span> ex)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"SignUpAsync encountered an error: "</span> + ex);
+            <span class="code-keyword">throw</span>;
+        }
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">UserLogin</span>(<span class="code-keyword">string</span> email, <span class="code-keyword">string</span> password, <span class="code-type">System.Action</span>&lt;<span class="code-keyword">bool</span>&gt; callback)
+    {
+        <span class="code-keyword">if</span> (auth == <span class="code-keyword">null</span>)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"FirebaseAuth is not initialized."</span>);
+            callback?.<span class="code-method">Invoke</span>(<span class="code-keyword">false</span>);
+            <span class="code-keyword">return</span>;
+        }
+        auth.<span class="code-method">SignInWithEmailAndPasswordAsync</span>(email, password).<span class="code-method">ContinueWithOnMainThread</span>(authTask =&gt;
+        {
+            <span class="code-keyword">if</span> (authTask.IsCanceled || authTask.IsFaulted)
+            {
+                <span class="code-method">Debug.LogWarning</span>(<span class="code-string">"Login failed: "</span> + authTask.Exception);
+                callback?.<span class="code-method">Invoke</span>(<span class="code-keyword">false</span>);
+                <span class="code-keyword">return</span>;
+            }
+            user = authTask.Result.User;
+            <span class="code-method">Debug.Log</span>(<span class="code-string">"Login successful. UID: "</span> + user.UserId);
+            <span class="code-method">FetchCurrentUserInfoAsync</span>().<span class="code-method">ContinueWithOnMainThread</span>(fetchTask =&gt;
+            {
+                <span class="code-keyword">if</span> (fetchTask.IsCanceled || fetchTask.IsFaulted)
+                {
+                    <span class="code-method">Debug.LogError</span>(<span class="code-string">"Login succeeded, but failed to fetch user info: "</span> + fetchTask.Exception);
+                    callback?.<span class="code-method">Invoke</span>(<span class="code-keyword">false</span>);
+                    <span class="code-keyword">return</span>;
+                }
+                <span class="code-method">Debug.Log</span>(<span class="code-string">"Successfully fetched user info."</span>);
+                callback?.<span class="code-method">Invoke</span>(<span class="code-keyword">true</span>);
+            });
+        });
+    }
+
+    <span class="code-keyword">public async Task</span> <span class="code-method">AddUserPointsAsync</span>(<span class="code-keyword">int</span> pointsToAdd)
+    {
+        <span class="code-keyword">if</span> (auth.CurrentUser == <span class="code-keyword">null</span> || firestore == <span class="code-keyword">null</span>) <span class="code-keyword">return</span>;
+        <span class="code-keyword">string</span> uid = auth.CurrentUser.UserId;
+        <span class="code-type">DocumentReference</span> docRef = firestore.Collection(<span class="code-string">"userInfo"</span>).<span class="code-method">Document</span>(uid);
+        <span class="code-type">Dictionary&lt;string, object&gt;</span> updates = <span class="code-keyword">new</span> <span class="code-type">Dictionary&lt;string, object&gt;</span>
+        { { <span class="code-string">"points"</span>, <span class="code-type">FieldValue</span>.<span class="code-method">Increment</span>(pointsToAdd) } };
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-keyword">await</span> docRef.<span class="code-method">UpdateAsync</span>(updates);
+            <span class="code-method">Debug.Log</span>(<span class="code-string">$"ユーザー(UID: {uid})に {pointsToAdd} ポイント加算しました。"</span>);
+        }
+        <span class="code-keyword">catch</span> (<span class="code-type">Exception</span> ex)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">$"ポイントの加算中にエラーが発生しました: {ex}"</span>);
+            <span class="code-keyword">throw</span>;
+        }
+    }
+
+    <span class="code-keyword">public async Task</span> <span class="code-method">AddUserScoreAsync</span>(<span class="code-keyword">int</span> scoreToAdd)
+    {
+        <span class="code-keyword">if</span> (auth.CurrentUser == <span class="code-keyword">null</span> || firestore == <span class="code-keyword">null</span>) <span class="code-keyword">return</span>;
+        <span class="code-keyword">string</span> uid = auth.CurrentUser.UserId;
+        <span class="code-type">DocumentReference</span> docRef = firestore.Collection(<span class="code-string">"userInfo"</span>).<span class="code-method">Document</span>(uid);
+        <span class="code-type">Dictionary&lt;string, object&gt;</span> updates = <span class="code-keyword">new</span> <span class="code-type">Dictionary&lt;string, object&gt;</span>
+        { { <span class="code-string">"score"</span>, <span class="code-type">FieldValue</span>.<span class="code-method">Increment</span>(scoreToAdd) } };
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-keyword">await</span> docRef.<span class="code-method">UpdateAsync</span>(updates);
+            <span class="code-method">Debug.Log</span>(<span class="code-string">$"ユーザー(UID: {uid})に {scoreToAdd} スコア加算しました。"</span>);
+        }
+        <span class="code-keyword">catch</span> (<span class="code-type">Exception</span> ex)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">$"スコアの加算中にエラーが発生しました: {ex}"</span>);
+            <span class="code-keyword">throw</span>;
+        }
+    }
+}</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <p> (一部抜粋) </p>
+                        <br>
+                        <h3>解説</h3>
+                        <p>
+                            <span class="code-inline">AuthenticationManager</span> は、Firebaseを使用したユーザー認証とデータ管理を一元的に行うコアスクリプトです。
+                            シングルトンパターンで実装しており、アプリケーション全体で唯一のインスタンスとして機能します。
+                            新規登録 (<span class="code-inline">SignUpAsync</span>) 、ログイン (<span class="code-inline">UserLogin</span>) 、ユーザー情報の取得 (<span class="code-inline">FetchCurrentUserInfoAsync</span>) などの主要な認証機能を備えています。
+                        </p>
+                        <p>
+                            <span class="code-inline">AddUserPointsAsync</span> と <span class="code-inline">AddUserScoreAsync</span> メソッドでは、
+                            ユーザーがミッションを完了したときやゲーム内の操作をしたときに、Firestoreのデータを原子性 (Atomicity) を守りながら更新します。
+                        </p>
+                        <div class="code-highlights">
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">💡</span>
+                                <span class="highlight-text"><strong>シングルトン実装: </strong><span class="code-inline">DontDestroyOnLoad</span> を使用して、シーン遷移時もインスタンスを保持し、ログイン情報を維持しました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">⚙️</span>
+                                <span class="highlight-text"><strong>非同期処理の活用: </strong>ほぼすべてのメソッドを <span class="code-inline">async/await</span> パターンで実装し、UI のフリーズを防ぎながらスムーズなデータ取得を実現。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🔐</span>
+                                <span class="highlight-text"><strong>Firebase Authentication の統合: </strong>メール・パスワードベースの認証を実装し、安全なユーザー管理を実現しました。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- コードブロック 2 -->
+                <div class="code-block-wrapper">
+                    <div class="code-block-header" onclick="toggleCodeBlock(event)">
+                        <div class="code-block-toggle">
+                            <span class="code-toggle-icon">▼</span>
+                            <span class="filename">LoginUI.cs</span>
+                        </div>
+                        <span class="language-badge">C#</span>
+                    </div>
+                    <div class="code-block-body">
+<pre><code><span class="code-keyword">using</span> UnityEngine;
+<span class="code-keyword">using</span> UnityEngine.UI;
+<span class="code-keyword">using</span> UnityEngine.SceneManagement;
+<span class="code-keyword">using</span> TMPro;
+
+<span class="code-keyword">public class</span> <span class="code-type">LoginUI</span> : <span class="code-type">MonoBehaviour</span>
+{
+    [<span class="code-attribute">Header</span>(<span class="code-string">"Register UI Components"</span>)]
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_InputField</span> emailRegisterInput;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_InputField</span> passwordRegisterInput;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_InputField</span> nameRegisterInput;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_Dropdown</span> prefectureRegisterSelected;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Button</span> registerButton;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_Text</span> registerErrorText;
+
+    [<span class="code-attribute">Header</span>(<span class="code-string">"Login UI Components"</span>)]
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_InputField</span> emailLoginInput;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_InputField</span> passwordLoginInput;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Button</span> loginButton;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TMP_Text</span> loginErrorText;
+
+    [<span class="code-attribute">Header</span>(<span class="code-string">"Navigation Buttons"</span>)]
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Button</span> changeToLoginButton;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Button</span> changeToRegisterButton;
+
+    [<span class="code-attribute">Header</span>(<span class="code-string">"UI Panels"</span>)]
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">GameObject</span> loginPanel;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">GameObject</span> registerPanel;
+
+    <span class="code-keyword">void</span> <span class="code-method">Awake</span>()
+    {
+        <span class="code-method">SetupReferences</span>();
+    }
+
     <span class="code-keyword">void</span> <span class="code-method">Start</span>()
     {
-        <span class="code-comment">// 初期化処理</span>
+        <span class="code-comment">// パネルの初期状態を設定</span>
+        <span class="code-keyword">if</span> (loginPanel != <span class="code-keyword">null</span>) loginPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">true</span>);
+        <span class="code-keyword">if</span> (registerPanel != <span class="code-keyword">null</span>) registerPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">false</span>);
+
+        <span class="code-comment">// エラーテキストの初期設定</span>
+        <span class="code-keyword">if</span> (registerErrorText != <span class="code-keyword">null</span>)
+        {
+            registerErrorText.text = <span class="code-string">"パスワードはアルファベットの\n大文字、小文字、数字を含み、\n8文字以上である必要があります。"</span>;
+            registerErrorText.color = Color.red;
+        }
+
+        <span class="code-keyword">if</span> (registerButton != <span class="code-keyword">null</span>) registerButton.onClick.<span class="code-method">AddListener</span>(OnRegisterButtonClicked);
+        <span class="code-keyword">if</span> (loginButton != <span class="code-keyword">null</span>) loginButton.onClick.<span class="code-method">AddListener</span>(OnLoginButtonClicked);
+        <span class="code-keyword">if</span> (changeToLoginButton != <span class="code-keyword">null</span>) changeToLoginButton.onClick.<span class="code-method">AddListener</span>(ToLoginPanel);
+        <span class="code-keyword">if</span> (changeToRegisterButton != <span class="code-keyword">null</span>) changeToRegisterButton.onClick.<span class="code-method">AddListener</span>(ToResisiterPanel);
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">SetupReferences</span>()
+    {
+        loginPanel = <span class="code-type">GameObject</span>.<span class="code-method">Find</span>(<span class="code-string">"LoginPanel"</span>).gameObject;
+        registerPanel = <span class="code-type">GameObject</span>.<span class="code-method">Find</span>(<span class="code-string">"SignUpPanel"</span>).gameObject;
+
+        <span class="code-comment">// ログイン関連UIの取得</span>
+        <span class="code-keyword">if</span> (loginPanel != <span class="code-keyword">null</span>)
+        {
+            emailLoginInput = loginPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"EmailInputField"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_InputField</span>&gt;();
+            passwordLoginInput = loginPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"PasswordInputField"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_InputField</span>&gt;();
+            loginButton = loginPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"LoginSubmit"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">Button</span>&gt;();
+            loginErrorText = loginPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"TextForLoginError"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_Text</span>&gt;();
+            changeToRegisterButton = loginPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"ChangeResisterBtn"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">Button</span>&gt;();
+        }
+        <span class="code-keyword">else</span>
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"LoginPanelが見つかりません！"</span>);
+        }
+
+        <span class="code-comment">// 新規登録関連UIの取得</span>
+        <span class="code-keyword">if</span> (registerPanel != <span class="code-keyword">null</span>)
+        {
+            emailRegisterInput = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"EmailInputField"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_InputField</span>&gt;();
+            passwordRegisterInput = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"PasswordInputField"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_InputField</span>&gt;();
+            nameRegisterInput = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"NameInputField"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_InputField</span>&gt;();
+            prefectureRegisterSelected = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"SelectPrefecture"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_Dropdown</span>&gt;();
+            registerButton = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"SignUpSubmit"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">Button</span>&gt;();
+            registerErrorText = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"TextForRegisterError"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">TMP_Text</span>&gt;();
+            changeToLoginButton = registerPanel.transform.<span class="code-method">Find</span>(<span class="code-string">"ChangeLoginBtn"</span>).<span class="code-method">GetComponent</span>&lt;<span class="code-type">Button</span>&gt;();
+        }
+        <span class="code-keyword">else</span>
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"RegisterPanel (SignUpPanel)が見つかりません！"</span>);
+        }
+    }
+
+    <span class="code-keyword">public async void</span> <span class="code-method">OnRegisterButtonClicked</span>()
+    {
+        registerErrorText.text = <span class="code-string">""</span>; <span class="code-comment">// エラーメッセージをリセット</span>
+        <span class="code-method">Debug.Log</span>(<span class="code-string">"登録ボタンがクリックされました。"</span>);
+
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-keyword">await</span> <span class="code-type">AuthenticationManager</span>.instance.<span class="code-method">SignUpAsync</span>(
+                emailRegisterInput.text,
+                passwordRegisterInput.text,
+                nameRegisterInput.text,
+                prefectureRegisterSelected.value
+            );
+            <span class="code-method">Debug.Log</span>(<span class="code-string">"登録が完了しました！"</span>);
+            <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"TEST_MainGame"</span>);
+        }
+        <span class="code-keyword">catch</span> (<span class="code-type">System.Exception</span> ex)
+        {
+            <span class="code-method">Debug.LogError</span>(<span class="code-string">"登録に失敗しました: "</span> + ex.Message);
+            registerErrorText.color = Color.black;
+            registerErrorText.text = <span class="code-string">"登録に失敗しました。\nもう一度お試しください。"</span>;
+        }
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">OnLoginButtonClicked</span>()
+    {
+        loginErrorText.text = <span class="code-string">""</span>; <span class="code-comment">// エラーメッセージをリセット</span>
+        <span class="code-type">AuthenticationManager</span>.instance.<span class="code-method">UserLogin</span>(emailLoginInput.text, passwordLoginInput.text, success =&gt;
+        {
+            <span class="code-keyword">if</span> (success)
+            {
+                <span class="code-method">Debug.Log</span>(<span class="code-string">"ログイン完了！メインシーンへ。"</span>);
+                <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"TEST_MainGame"</span>); <span class="code-comment">// メインシーン読み込み</span>
+            }
+            <span class="code-keyword">else</span>
+            {
+                loginErrorText.text = <span class="code-string">"メールアドレス、\nパスワードのどちらか、\nまたは両方が間違っています。"</span>;
+            }
+        });
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">ToResisiterPanel</span>() <span class="code-comment">// ログイン画面から登録画面への遷移</span>
+    {
+        loginPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">false</span>);
+        registerPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">true</span>);
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">ToLoginPanel</span>() <span class="code-comment">// 登録画面からログイン画面への遷移</span>
+    {
+        loginPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">true</span>);
+        registerPanel.<span class="code-method">SetActive</span>(<span class="code-keyword">false</span>);
+    }
+
+    <span class="code-keyword">void</span> <span class="code-method">OnDestroy</span>()
+    {
+        <span class="code-keyword">if</span> (registerButton != <span class="code-keyword">null</span>) registerButton.onClick.<span class="code-method">RemoveListener</span>(OnRegisterButtonClicked);
+        <span class="code-keyword">if</span> (loginButton != <span class="code-keyword">null</span>) loginButton.onClick.<span class="code-method">RemoveListener</span>(OnLoginButtonClicked);
+        <span class="code-keyword">if</span> (changeToLoginButton != <span class="code-keyword">null</span>) changeToLoginButton.onClick.<span class="code-method">RemoveListener</span>(ToLoginPanel);
+        <span class="code-keyword">if</span> (changeToRegisterButton != <span class="code-keyword">null</span>) changeToRegisterButton.onClick.<span class="code-method">RemoveListener</span>(ToResisiterPanel);
     }
 }</code></pre>
                     </div>
                     <div class="code-explanation">
                         <h3>解説</h3>
                         <p>
-                            ここにコードの解説文を記述します。
-                            このスクリプトが何を担当しているか、どのような処理をしているかを説明します。
+                            <span class="code-inline">LoginUI</span> は、ログイン・新規登録画面のUIロジックを管理するスクリプトです。
+                            ログインパネルと登録パネルの表示切替、各種入力フィールドの管理、ボタンイベントの処理を担当しています。
+                        </p>
+                        <p>
+                            <span class="code-inline">SetupReferences</span> メソッドで、シーン内のUIコンポーネントを動的に取得し、スクリプト内で参照にしています。
+                            <span class="code-inline">OnRegisterButtonClicked</span> と <span class="code-inline">OnLoginButtonClicked</span> は、
+                            それぞれ登録ボタンとログインボタンが押された時の処理を実行し、<span class="code-inline">AuthenticationManager</span> を呼び出して認証を行います。
+                            成功時はメインゲームシーンへ遷移し、失敗時はエラーメッセージを表示します。
                         </p>
                         <div class="code-highlights">
                             <div class="code-highlight-item">
                                 <span class="highlight-icon">💡</span>
-                                <span class="highlight-text"><strong>こだわりポイント：</strong>ここにこだわったポイントや工夫した点を記述します。</span>
+                                <span class="highlight-text"><strong>動的なコンポーネント取得：</strong><span class="code-inline">GameObject.Find()</span> と <span class="code-inline">transform.Find()</span> を組み合わせて、シーン内のUIコンポーネントを柔軟に取得しました。</span>
                             </div>
                             <div class="code-highlight-item">
-                                <span class="highlight-icon">⚙️</span>
-                                <span class="highlight-text"><strong>技術的なポイント：</strong>使用した技術や設計上の判断について記述します。</span>
+                                <span class="highlight-icon">🎨</span>
+                                <span class="highlight-text"><strong>パネルの切替管理：</strong><span class="code-inline">SetActive()</span> を使用してログイン・登録パネルを簡潔に切り替えられるようにしました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">⚡</span>
+                                <span class="highlight-text"><strong>非同期登録処理：</strong><span class="code-inline">async/await</span> を使用して、Firebase への登録中も UI が反応するようにしました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🧹</span>
+                                <span class="highlight-text"><strong>メモリ管理：</strong><span class="code-inline">OnDestroy</span> でボタンイベントのリスナーを登録解除し、メモリリークを防ぎました。</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- コードブロック 2（必要に応じてコピーして追加） -->
-                <!--
-                <div class="code-block-wrapper">
-                    <div class="code-block-header">
-                        <span class="filename">AnotherScript.cs</span>
-                        <span class="language-badge">C#</span>
-                    </div>
-                    <div class="code-block-body">
-<pre><code>// コードをここに</code></pre>
-                    </div>
-                    <div class="code-explanation">
-                        <h3>解説</h3>
-                        <p>解説文をここに</p>
-                        <div class="code-highlights">
-                            <div class="code-highlight-item">
-                                <span class="highlight-icon">💡</span>
-                                <span class="highlight-text"><strong>こだわりポイント：</strong>説明</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                -->
             </div>
         </div>
     </section>
@@ -194,6 +585,12 @@
             document.getElementById('mainImage').src = thumb.src;
             document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
             thumb.classList.add('active');
+        }
+
+        function toggleCodeBlock(event) {
+            const header = event.currentTarget;
+            const wrapper = header.closest('.code-block-wrapper');
+            wrapper.classList.toggle('collapsed');
         }
     </script>
 </body>
