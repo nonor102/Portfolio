@@ -313,6 +313,7 @@ section:nth-child(even) {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
+    align-items: start;
 }
 
 .work-card {
@@ -321,6 +322,8 @@ section:nth-child(even) {
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .work-card:hover {
@@ -348,6 +351,9 @@ section:nth-child(even) {
 
 .work-content {
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .work-content h3 {
@@ -410,11 +416,32 @@ section:nth-child(even) {
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
 }
 
+/* Works Subsections (side-by-side layout) */
+.works-subsections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.works-subsection {
+    min-width: 0;
+}
+
+.works-subsection .section-description {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.works-subsection .works-grid {
+    grid-template-columns: 1fr;
+}
+
 /* Works Subsection Title */
 .works-subsection-title {
     font-size: 1.5rem;
     color: var(--dark);
-    margin-top: 3rem;
+    margin-top: 0;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--primary);
@@ -497,6 +524,10 @@ footer {
     }
 
     .works-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .works-subsections {
         grid-template-columns: 1fr;
     }
 }
