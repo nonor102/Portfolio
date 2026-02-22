@@ -80,7 +80,7 @@
             <div class="detail-full-section">
                 <h2>作品について</h2>
                 <p>
-                    Overflow Clickerは、UnityとC#を用いて開発した2Dクリッカーゲームです。
+                    Overflow Clickerは、UnityとC#を用いて開発している2Dクリッカーゲームです。
                     クリッカーゲームとインクリメンタルゲームの要素を組み合わせ、C#の数値型のオーバーフローという仕組みをゲームの核として活用しています。
                 </p>
                 <p>
@@ -91,6 +91,318 @@
                     ゲームバランスの設計にこだわり、進行するにつれてオーバーフローまでの道のりが短くなるように調整しました。
                     これにより、凄まじいインフレーションによる爽快感のあるゲーム体験を提供し、プレイヤーに「もう少し先まで進めたい」と感じさせるサイクルを実現しています。
                 </p>
+                <p>
+                    数値型は現在5種類で考えており、sbyte、short、int、long、doubleとしています。
+                    それぞれのステージをAlpha、Beta、Gamma、Delta、Epsilonと命名しており、タブを切り替えることで各ステージの画面を表示できるようにしています。
+                </p>
+                <p>
+                    Alphaを除く各タブ内では、今までに取得したスコアを利用する子タブを複数用意し、次のオーバーフローへの道のりを短くするためのアップグレードを実装していますが、
+                    すべての要素を使わずとも、オーバーフローさせることは可能なバランスに調整しています。
+                </p>
+                <p>
+                    現在はまだ開発途中ですので、ゲームシステムの構築がメインですが、今後はUI/UXの改善、バランス調整などを重ねて、最終的にはUnityroomで公開することを目指しています。
+                </p>
+            </div>
+
+            <!-- ソースコード紹介 -->
+            <div class="code-showcase">
+                <h2>ソースコード紹介</h2>
+
+                <!-- コードブロック 1: BetaUpgrade.cs -->
+                <div class="code-block-wrapper">
+                    <div class="code-block-header" onclick="toggleCodeBlock(event)">
+                        <div class="code-block-toggle">
+                            <span class="code-toggle-icon">▼</span>
+                            <span class="filename">/ScriptableObjectsScript/BetaUpgrade.cs</span>
+                        </div>
+                        <span class="language-badge">C#</span>
+                    </div>
+                    <div class="code-block-body">
+<pre><code><span class="code-keyword">using</span> System.Collections;
+<span class="code-keyword">using</span> System.Collections.Generic;
+<span class="code-keyword">using</span> UnityEngine;
+
+<span class="code-keyword">public enum</span> <span class="code-type">BetaUpgradeStatus</span>
+{
+    Locked,    <span class="code-comment">// 未開放</span>
+    Available, <span class="code-comment">// 解放可能</span>
+    Completed  <span class="code-comment">// 解放済み</span>
+}
+
+[<span class="code-attribute">CreateAssetMenu</span>(fileName = <span class="code-string">"BetaUpgrade"</span>, menuName = <span class="code-string">"ScriptableObjects/Create Beta Upgrade"</span>)]
+<span class="code-keyword">public class</span> <span class="code-type">BetaUpgrade</span> : <span class="code-type">ScriptableObject</span>
+{
+    [<span class="code-attribute">Header</span>(<span class="code-string">"強化の情報"</span>)]
+    <span class="code-keyword">public int</span> upgradeID; <span class="code-comment">// ユニークなID</span>
+    <span class="code-keyword">public string</span> title; <span class="code-comment">// タイトル</span>
+    <span class="code-keyword">public double</span> needBetaFactor; <span class="code-comment">// 解放に必要なBetaFactorの数</span>
+    [<span class="code-attribute">TextArea</span>]
+    <span class="code-keyword">public string</span> description; <span class="code-comment">// 説明</span>
+
+    [<span class="code-attribute">Header</span>(<span class="code-string">"前提となる強化"</span>)]
+    <span class="code-keyword">public</span> <span class="code-type">List&lt;BetaUpgrade&gt;</span> preRequiredUpgrade;
+
+    <span class="code-comment">// 以下、必要な変数を準備</span>
+}</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <h3>解説</h3>
+                        <p>
+                            <span class="code-inline">BetaUpgrade</span> は、Betaステージにおけるアップグレード（強化）の定義を行うための ScriptableObject です。
+                            各アップグレードの情報（ID、タイトル、必要コスト、説明文）をUnityエディタ上から設定できるようになっています。
+                        </p>
+                        <p>
+                            <span class="code-inline">BetaUpgradeStatus</span> enum により、各アップグレードの状態を「未開放」「解放可能」「解放済み」の3段階で管理します。
+                            また、<span class="code-inline">preRequiredUpgrade</span> リストにより、アップグレードの前提条件となる他のアップグレードを設定でき、
+                            スキルツリー形式のアンロック構造を実現しています。
+                        </p>
+                        <div class="code-highlights">
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">💡</span>
+                                <span class="highlight-text"><strong>ScriptableObject の活用：</strong>アップグレードのデータをスクリプトから分離し、Unityエディタ上で直感的に設定・管理できるようにしました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🔗</span>
+                                <span class="highlight-text"><strong>前提条件システム：</strong><span class="code-inline">preRequiredUpgrade</span> で他のアップグレードを参照することで、段階的なアンロック構造を柔軟に構築可能にしました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">⚙️</span>
+                                <span class="highlight-text"><strong>enum によるステータス管理：</strong>3つの状態を明確に定義し、アップグレードの進行状況を型安全に管理しました。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- コードブロック 2: SavePlayerData.cs -->
+                <div class="code-block-wrapper">
+                    <div class="code-block-header" onclick="toggleCodeBlock(event)">
+                        <div class="code-block-toggle">
+                            <span class="code-toggle-icon">▼</span>
+                            <span class="filename">SavePlayerData.cs</span>
+                        </div>
+                        <span class="language-badge">C#</span>
+                    </div>
+                    <div class="code-block-body">
+<pre><code><span class="code-keyword">using</span> System;
+<span class="code-keyword">using</span> System.Collections.Generic;
+<span class="code-keyword">using</span> System.IO;
+<span class="code-keyword">using</span> Unity.VisualScripting;
+<span class="code-keyword">using</span> UnityEngine;
+<span class="code-keyword">using</span> UnityEngine.Rendering;
+<span class="code-keyword">using</span> System.Linq;
+
+[<span class="code-attribute">Serializable</span>]
+<span class="code-keyword">public class</span> <span class="code-type">SaveData</span>
+{
+    <span class="code-keyword">public double</span> AlphaFactorForCalc;
+    <span class="code-keyword">public double</span> AlphaFactorExp;
+    <span class="code-keyword">public bool</span> IsAlphaOverflowCollapsed;
+    <span class="code-keyword">public double</span> AlphaOverflowCount;
+
+    <span class="code-keyword">public bool</span> IsArrivedBeta;
+    <span class="code-keyword">public double</span> AllBFGetInThisTerm;
+    <span class="code-keyword">public double</span> BetaFactorForCalc;
+    <span class="code-keyword">public double</span> BetaNum;
+    <span class="code-keyword">public double</span> BetaFactorExp;
+    <span class="code-keyword">public double</span> BetaFactorUsedInAmplification;
+    <span class="code-keyword">public bool</span> IsBetaOverflowCollapsed;
+    <span class="code-keyword">public double</span> BetaOverflowCount;
+
+    <span class="code-keyword">public bool</span> IsUpgrade0Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade5Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade6Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade7Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade8Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade9Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade10Completed;
+    <span class="code-keyword">public bool</span> IsUpgrade11Completed;
+
+    <span class="code-keyword">public int</span> LatestCompletedMissionID;
+
+    <span class="code-keyword">public double</span> BetaBankAmount;
+    <span class="code-keyword">public double</span> BetaBankInterestRate;
+
+    <span class="code-keyword">public</span> <span class="code-method">SaveData</span>()
+    {
+        AlphaFactorForCalc = <span class="code-number">0.0</span>;
+        AlphaOverflowCount = <span class="code-number">0.0</span>;
+        AlphaFactorExp = <span class="code-number">1.0</span>;
+
+        AllBFGetInThisTerm = <span class="code-number">0.0</span>;
+        BetaFactorForCalc = <span class="code-number">0.0</span>;
+        BetaNum = <span class="code-number">0.0</span>;
+        BetaFactorExp = <span class="code-number">1.0</span>;
+        BetaFactorUsedInAmplification = <span class="code-number">0.0</span>;
+        BetaOverflowCount = <span class="code-number">0.0</span>;
+
+        LatestCompletedMissionID = <span class="code-number">0</span>;
+
+        BetaBankAmount = <span class="code-number">0.0</span>;
+        BetaBankInterestRate = <span class="code-number">0.0001</span>;
+    }
+}
+
+[<span class="code-attribute">Serializable</span>]
+<span class="code-keyword">public class</span> <span class="code-type">BetaUpgradeClassWrapper</span>
+{
+    <span class="code-keyword">public</span> <span class="code-type">List&lt;int&gt;</span> CompleteBetaUpgradeIDs;
+}
+
+[<span class="code-attribute">Serializable</span>]
+<span class="code-keyword">public class</span> <span class="code-type">GameSaveData</span>
+{
+    <span class="code-keyword">public</span> <span class="code-type">SaveData</span> mainData;
+    <span class="code-keyword">public</span> <span class="code-type">BetaUpgradeClassWrapper</span> betaUpgradeData;
+}
+
+<span class="code-keyword">public class</span> <span class="code-type">SavePlayerData</span> : <span class="code-type">MonoBehaviour</span>
+{
+    <span class="code-keyword">public</span> <span class="code-type">SaveData</span> Data { <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+    <span class="code-keyword">public</span> <span class="code-type">BetaUpgradeClassWrapper</span> BetaWrapper { <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+
+    <span class="code-keyword">private string</span> _saveDataFilePath;
+    <span class="code-keyword">private string</span> _saveDataFileName = <span class="code-string">"PlayerData.json"</span>;
+
+    <span class="code-keyword">private void</span> <span class="code-method">Awake</span>()
+    {
+        Data = <span class="code-keyword">new</span> <span class="code-type">SaveData</span>();
+        BetaWrapper = <span class="code-keyword">new</span> <span class="code-type">BetaUpgradeClassWrapper</span>();
+        BetaWrapper.CompleteBetaUpgradeIDs = <span class="code-keyword">new</span> <span class="code-type">List&lt;int&gt;</span>();
+
+        _saveDataFilePath = <span class="code-type">Path</span>.<span class="code-method">Combine</span>(<span class="code-type">Application</span>.persistentDataPath, _saveDataFileName);
+
+        <span class="code-keyword">if</span> (<span class="code-type">File</span>.<span class="code-method">Exists</span>(_saveDataFilePath))
+        {
+            <span class="code-method">Load</span>();
+        }
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">Start</span>()
+    {
+        <span class="code-keyword">if</span> (!<span class="code-type">File</span>.<span class="code-method">Exists</span>(_saveDataFilePath))
+        {
+            <span class="code-method">Save</span>();
+        }
+        <span class="code-type">GameManager</span>.Instance.<span class="code-method">InitializeDataFromJson</span>(Data);
+        <span class="code-type">BetaUpgradeManager</span>.Instance.<span class="code-method">InitializeFromSaveData</span>(BetaWrapper.CompleteBetaUpgradeIDs);
+        <span class="code-type">BetaMissionManager</span>.Instance.<span class="code-method">SetMissionsFromSaveData</span>(Data);
+        <span class="code-type">BetaBankManager</span>.Instance.<span class="code-method">InitializeFromSaveData</span>(Data.BetaBankAmount, Data.BetaBankInterestRate);
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">Save</span>() <span class="code-comment">// jsonにする
+    </span>
+    {
+        <span class="code-type">GameSaveData</span> gameSaveData = <span class="code-keyword">new</span> <span class="code-type">GameSaveData</span>
+        {
+            mainData = Data,
+            betaUpgradeData = BetaWrapper
+        };
+
+        <span class="code-keyword">string</span> json = <span class="code-type">JsonUtility</span>.<span class="code-method">ToJson</span>(gameSaveData, <span class="code-keyword">true</span>);
+
+        <span class="code-type">File</span>.<span class="code-method">WriteAllText</span>(_saveDataFilePath, json);
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">Load</span>() <span class="code-comment">// jsonからよむ</span>
+    {
+        <span class="code-keyword">string</span> json = <span class="code-type">File</span>.<span class="code-method">ReadAllText</span>(_saveDataFilePath);
+
+        <span class="code-type">GameSaveData</span> loadedData = <span class="code-type">JsonUtility</span>.<span class="code-method">FromJson&lt;GameSaveData&gt;</span>(json);
+
+        Data = loadedData.mainData;
+        BetaWrapper = loadedData.betaUpgradeData;
+
+        <span class="code-keyword">if</span> (Data == <span class="code-keyword">null</span>) Data = <span class="code-keyword">new</span> <span class="code-type">SaveData</span>();
+        <span class="code-keyword">if</span> (BetaWrapper == <span class="code-keyword">null</span>)
+        {
+            BetaWrapper = <span class="code-keyword">new</span> <span class="code-type">BetaUpgradeClassWrapper</span>();
+            BetaWrapper.CompleteBetaUpgradeIDs = <span class="code-keyword">new</span> <span class="code-type">List&lt;int&gt;</span>();
+        }
+    }
+
+    <span class="code-keyword">public void</span> <span class="code-method">SaveUserData</span>()
+    {
+        <span class="code-method">SaveVariables</span>(Data, BetaWrapper);
+        <span class="code-method">Save</span>();
+        <span class="code-method">Debug.Log</span>(<span class="code-string">"userdata is saved to: "</span> + _saveDataFilePath);
+    }
+
+    <span class="code-keyword">private void</span> <span class="code-method">SaveVariables</span>(<span class="code-type">SaveData</span> saveData, <span class="code-type">BetaUpgradeClassWrapper</span> betaUpgradeClassWrapper) // データをGameManagerとかからとってくる
+    {
+        saveData.AlphaFactorForCalc = <span class="code-type">GameManager</span>.Instance.AlphaFactorForCalc;
+        saveData.AlphaFactorExp = <span class="code-type">GameManager</span>.Instance.AlphaFactorExp;
+        saveData.IsAlphaOverflowCollapsed = <span class="code-type">GameManager</span>.Instance.IsAlphaOverflowCollapsed;
+        saveData.AlphaOverflowCount = <span class="code-type">GameManager</span>.Instance.AlphaOverflowCount;
+
+        saveData.IsArrivedBeta = <span class="code-type">GameManager</span>.Instance.IsArrivedBeta;
+        saveData.AllBFGetInThisTerm = <span class="code-type">GameManager</span>.Instance.AllBetaFactorGetInThisTerm;
+        saveData.BetaFactorForCalc = <span class="code-type">GameManager</span>.Instance.BetaFactorForCalc;
+        saveData.BetaNum = <span class="code-type">GameManager</span>.Instance.BetaNum;
+        saveData.BetaFactorExp = <span class="code-type">GameManager</span>.Instance.BetaFactorExp;
+        saveData.BetaFactorUsedInAmplification = <span class="code-type">GameManager</span>.Instance.BetaFactorUsedInAmplification;
+        saveData.IsBetaOverflowCollapsed = <span class="code-type">GameManager</span>.Instance.IsBetaOverflowCollapsed;
+        saveData.BetaOverflowCount = <span class="code-type">GameManager</span>.Instance.BetaOverflowCount;
+
+        saveData.IsUpgrade0Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade0Completed;
+        saveData.IsUpgrade5Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade5Completed;
+        saveData.IsUpgrade6Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade6Completed;
+        saveData.IsUpgrade7Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade7Completed;
+        saveData.IsUpgrade8Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade8Completed;
+        saveData.IsUpgrade9Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade9Completed;
+        saveData.IsUpgrade10Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade10Completed;
+        saveData.IsUpgrade11Completed = <span class="code-type">BetaUpgradeManager</span>.Instance.IsUpgrade11Completed;
+
+        saveData.LatestCompletedMissionID = <span class="code-type">BetaMissionManager</span>.Instance.LatestCompletedMissionID;
+
+        <span class="code-comment">// BetaUpgradeStatuses ディクショナリの中から、</span>
+        <span class="code-comment">// 値(Value)が Completed であるものだけを抽出し(Where)、</span>
+        <span class="code-comment">// そのキー(Key)だけを選択して(Select)、</span>
+        <span class="code-comment">// 新しいリストとして(ToList)代入する。</span>
+        betaUpgradeClassWrapper.CompleteBetaUpgradeIDs = <span class="code-type">BetaUpgradeManager</span>.Instance.BetaUpgradeStatuses
+            .<span class="code-method">Where</span>(pair =&gt; pair.Value == <span class="code-type">BetaUpgradeStatus</span>.Completed)
+            .<span class="code-method">Select</span>(pair =&gt; pair.Key)
+            .<span class="code-method">ToList</span>();
+
+        saveData.BetaBankAmount = <span class="code-type">BetaBankManager</span>.Instance.CurrentBetaBankAmount;
+        saveData.BetaBankInterestRate = <span class="code-type">BetaBankManager</span>.Instance.InterestRate;
+    }
+}</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <h3>解説</h3>
+                        <p>
+                            <span class="code-inline">SavePlayerData</span> は、ゲームのプレイヤーデータをJSONファイルとして保存・読み込みするセーブシステムです。
+                            <span class="code-inline">SaveData</span> クラスにAlpha・Betaステージの進行状況やアップグレードの達成状態、ミッション進捗などを保持し、
+                            <span class="code-inline">JsonUtility</span> を使ってシリアライズ/デシリアライズを行います。
+                        </p>
+                        <p>
+                            <span class="code-inline">Awake</span> でセーブファイルの存在を確認し、あればロード。
+                            <span class="code-inline">Start</span> では読み込んだデータを各マネージャクラスに渡して初期化を行います。
+                            <span class="code-inline">SaveVariables</span> メソッドでは各マネージャから最新の値を収集し、保存用データに反映します。
+                        </p>
+                        <p>
+                            現在、デバッグの容易性のためにセーブデータは暗号化していませんが、将来的にはセキュリティを考慮して暗号化することも検討しています。
+                        </p>
+                        <div class="code-highlights">
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">💡</span>
+                                <span class="highlight-text"><strong>JSON によるセーブシステム：</strong><span class="code-inline">JsonUtility</span> を使い、プレイヤーデータをJSONファイルとして永続化します。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🧩</span>
+                                <span class="highlight-text"><strong>データ構造の分離：</strong><span class="code-inline">SaveData</span>、<span class="code-inline">BetaUpgradeClassWrapper</span>、<span class="code-inline">GameSaveData</span> と役割ごとにクラスを分離し、拡張性を確保しました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">📊</span>
+                                <span class="highlight-text"><strong>LINQ によるデータ抽出：</strong><span class="code-inline">SaveVariables</span> メソッド内で LINQ を活用し、完了済みアップグレードのIDだけを簡潔に抽出しています。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🛡️</span>
+                                <span class="highlight-text"><strong>null 安全なロード処理：</strong>ロード時に <span class="code-inline">null</span> チェックを行い、データ破損時または初回起動時でも安全にデフォルト値で初期化できるようにしました。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -107,6 +419,13 @@
             document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
             thumb.classList.add('active');
         }
+
+        function toggleCodeBlock(event) {
+            const header = event.currentTarget;
+            const wrapper = header.closest('.code-block-wrapper');
+            wrapper.classList.toggle('collapsed');
+        }
+    </script>
     </script>
 </body>
 </html>
