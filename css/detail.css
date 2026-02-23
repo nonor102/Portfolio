@@ -555,15 +555,41 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
     .detail-hero h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .detail-hero .subtitle {
+        font-size: 0.95rem;
+        padding: 0 0.5rem;
+    }
+
+    .detail-hero {
+        padding: 3rem 0 2rem;
+    }
+
+    .detail-content {
+        padding: 2rem 0;
     }
 
     .detail-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
     .gallery-thumbs img {
         height: 60px;
+    }
+
+    .info-section {
+        padding: 1.5rem;
+    }
+
+    .info-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .info-section p {
+        font-size: 0.95rem;
     }
 
     .detail-actions {
@@ -583,5 +609,100 @@ body {
 
     .meta-label {
         margin-top: 0.5rem;
+    }
+
+    .detail-full-section {
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .detail-full-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .detail-full-section p {
+        font-size: 0.95rem;
+    }
+
+    .features-list li {
+        font-size: 0.95rem;
+    }
+
+    .code-showcase > h2 {
+        font-size: 1.3rem;
+    }
+
+    .code-block-header {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .code-block-header .language-badge {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.6rem;
+    }
+
+    .code-highlight-item {
+        padding: 0.8rem 1rem;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .code-highlight-item .highlight-text {
+        font-size: 0.9rem;
+    }
+
+    .detail-nav .logo {
+        font-size: 1.2rem;
+    }
+
+    .back-link {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .detail-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .detail-hero .subtitle {
+        font-size: 0.85rem;
+    }
+
+    .detail-hero .tag {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.7rem;
+    }
+
+    .info-section {
+        padding: 1.2rem;
+    }
+
+    .detail-full-section {
+        padding: 1.2rem;
+    }
+
+    .gallery-main {
+        aspect-ratio: 16 / 11;
+    }
+
+    .gallery-thumbs img {
+        height: 50px;
+        min-width: 60px;
+    }
+
+    .code-block-body pre {
+        font-size: 0.75rem;
+        line-height: 1.5;
+    }
+
+    .detail-footer {
+        padding: 1.5rem 0;
+        font-size: 0.9rem;
     }
 }
