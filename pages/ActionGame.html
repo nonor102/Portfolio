@@ -56,7 +56,7 @@
                             <span class="meta-label">開発人数</span>
                             <span class="meta-value">4人 (チーム開発) </span>
                             <span class="meta-label">公開状況</span>
-                            <span class="meta-value">非公開</span>
+                            <span class="meta-value">ソースコードの一部のみ公開</span>
                         </div>
                     </div>
 
@@ -65,7 +65,8 @@
                         <ul class="features-list">
                             <li>縦スクロール型のステージを進んでいく2Dアクションゲーム</li>
                             <li>プレイヤーキャラクターを操作してステージを上へと進む</li>
-                            <li>UnityとC#を用いた開発</li>
+                            <li>UnityとC#を用い技能に差があるチームで共同開発</li>
+                            <li>5日間で設計から完成させたチーム開発プロジェクト</li>
                         </ul>
                     </div>
 
@@ -83,8 +84,353 @@
                     プレイヤーはキャラクターを操作し、ステージを上方向へと進んでいきます。
                 </p>
                 <p>
-                    ※本作品は非公開のため、ソースコードやデモの公開は行っておりません。
+                    SNS上で一時話題となった「風呂キャンセル界隈」をテーマとし、目的 (ゴール) は風呂に入ること、
+                    ゲームオーバーは風呂に入らず就寝する、または風呂に入るやる気をなくすこととしました。
                 </p>
+                <p>
+                    インターンシップの実習として、技術や知識に差のある3人のチームメンバーと共に協力し、1日は設計、4日で作製をし、完成させることができました。
+                    私ともう一人のメンバーで主にバックエンド処理 (スクリプト系) を担当し、もう二人のメンバーでUI/UXの設計やステージのデザインを担当しました。
+                </p>
+
+                <h2>自分の担当した部分</h2>
+                <p>
+                    私は主にゲームのバックエンド処理を担当し、その中でも基本的なキャラクターの動きやスコア (本作においては上った高さ) を管理するスクリプトを作製しました。
+                    キャラクターの壁や床との衝突判定、移動速度やアイテムなどによるキャラクターの動きの変化などを実装し、ゲームの基本的なプレイ感を作り上げることに注力しました。
+                    ゲームクリア、ゲームオーバー時の処理も担当し、ゲームの根幹を支える部分を作製しました。
+                </p>
+                <p>
+                    また、タイトルシーンも担当し、マウス操作ではなくキャラクターを操作しながらストーリーシーン、ゲームシーン、遊び方の説明シーンへ遷移できるようにしました。
+                </p>
+            </div>
+
+            <!-- ソースコード紹介 -->
+            <div class="code-showcase">
+                <h2>ソースコード紹介</h2>
+
+                <!-- コードブロック 1: Player.cs -->
+                <div class="code-block-wrapper">
+                    <div class="code-block-header" onclick="toggleCodeBlock(event)">
+                        <div class="code-block-toggle">
+                            <span class="code-toggle-icon">▼</span>
+                            <span class="filename">Player.cs</span>
+                        </div>
+                        <span class="language-badge">C#</span>
+                    </div>
+                    <div class="code-block-body">
+<pre><code><span class="code-keyword">using</span> System.Text.RegularExpressions;
+<span class="code-keyword">using</span> TMPro;
+<span class="code-keyword">using</span> Unity.VisualScripting;
+<span class="code-keyword">using</span> UnityEngine;
+<span class="code-keyword">using</span> UnityEngine.Pool;
+<span class="code-keyword">using</span> UnityEngine.SceneManagement;
+<span class="code-keyword">using</span> Cysharp.Threading.Tasks;
+
+<span class="code-keyword">public class</span> <span class="code-type">Player</span> : <span class="code-type">MonoBehaviour</span>
+{
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">AudioSource</span> RootSE;
+
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">AudioClip</span> jump;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">AudioClip</span> run;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Rigidbody2D</span> rb;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private float</span> playerSpeed;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private float</span> playerJumpPower;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">Animator</span> animator;
+    <span class="code-keyword">private int</span> count;
+    [<span class="code-attribute">SerializeField</span>] <span class="code-keyword">private</span> <span class="code-type">TextMeshProUGUI</span> scoreText;
+    <span class="code-keyword">private bool</span> isJumpTriggered = <span class="code-keyword">false</span>;
+    <span class="code-keyword">bool</span> hasPlayedRunSE = <span class="code-keyword">false</span>;
+    <span class="code-keyword">private bool</span> isGrounded;
+    <span class="code-keyword">public bool</span> isOntoHowToPlay{ <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+    <span class="code-keyword">public bool</span> isOntoStory{ <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+    <span class="code-keyword">public bool</span> isOntoPlay{ <span class="code-keyword">get</span>; <span class="code-keyword">private set</span>; }
+    <span class="code-keyword">private float</span> playerHeight = <span class="code-number">0f</span>;
+
+    <span class="code-keyword">private</span> <span class="code-type">PlayerAttack</span> playerAttack;
+
+    <span class="code-keyword">void</span> <span class="code-method">Start</span>()
+    {
+        rb.constraints = <span class="code-type">RigidbodyConstraints2D</span>.FreezeRotation;
+        playerAttack = <span class="code-method">GetComponent</span>&lt;<span class="code-type">PlayerAttack</span>&gt;();
+    }
+
+    <span class="code-keyword">void</span> <span class="code-method">Update</span>()
+    {
+        <span class="code-keyword">if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKeyDown</span>(<span class="code-type">KeyCode</span>.Space) &amp;&amp; isGrounded)
+        {
+            isJumpTriggered = <span class="code-keyword">true</span>;
+            RootSE.<span class="code-method">PlayOneShot</span>(jump); <span class="code-comment">// 飛ぶSE</span>
+        }
+
+        <span class="code-keyword">if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKeyDown</span>(<span class="code-type">KeyCode</span>.Escape))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivationSetter</span>();
+            <span class="code-method">Destroy</span>(<span class="code-method">GetComponent</span>&lt;<span class="code-type">PlayerHP</span>&gt;());
+            <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"UI"</span>);
+        }
+
+        <span class="code-keyword">if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKeyDown</span>(<span class="code-type">KeyCode</span>.Return) &amp;&amp; isOntoHowToPlay)
+        {
+            <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"explanation"</span>);
+        }
+        <span class="code-keyword">else if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKeyDown</span>(<span class="code-type">KeyCode</span>.Return) &amp;&amp; isOntoPlay)
+        {
+            <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"MainGame"</span>);
+        }
+        <span class="code-keyword">else if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKeyDown</span>(<span class="code-type">KeyCode</span>.Return) &amp;&amp; isOntoStory)
+        {
+            <span class="code-type">SceneManager</span>.<span class="code-method">LoadScene</span>(<span class="code-string">"Story Scene"</span>);
+        }
+
+        playerHeight = transform.position.y + <span class="code-number">6.5f</span>; <span class="code-comment">// 最初の地点からの高さ</span>
+
+        <span class="code-keyword">if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &lt;= <span class="code-number">0</span>)
+        {
+            scoreText.text = <span class="code-string">"ゲームオーバー! \n やる気が0になってしまった! \n"</span>
+                + <span class="code-string">"到達した高さ: "</span> + (<span class="code-keyword">int</span>)playerHeight
+                + <span class="code-string">"\n\n Escキーでタイトルへ"</span>;
+        }
+    }
+
+    <span class="code-keyword">void</span> <span class="code-method">FixedUpdate</span>()
+    {
+        <span class="code-keyword">if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &lt;= <span class="code-number">0</span>)
+        {
+            animator.<span class="code-method">SetBool</span>(<span class="code-string">"isGround"</span>, <span class="code-keyword">true</span>);
+            animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+            animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+            animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+
+            rb.constraints = <span class="code-type">RigidbodyConstraints2D</span>.None;
+            rb.constraints = <span class="code-type">RigidbodyConstraints2D</span>.FreezePositionX;
+            rb.constraints = <span class="code-type">RigidbodyConstraints2D</span>.FreezePositionY;
+
+            <span class="code-keyword">while</span> (transform.eulerAngles.z &gt;= <span class="code-number">0</span> &amp;&amp; transform.eulerAngles.z &lt; <span class="code-number">90</span>)
+            {
+                transform.<span class="code-method">Rotate</span>(<span class="code-number">0f</span>, <span class="code-number">0f</span>, <span class="code-number">90f</span>);
+            }
+        }
+
+        <span class="code-keyword">int</span> layerMask = <span class="code-number">1</span> &lt;&lt; <span class="code-number">7</span>;
+
+        <span class="code-comment">// Raycastによる接地判定（3方向）</span>
+        <span class="code-type">Ray2D</span> rayNormal = <span class="code-keyword">new</span> <span class="code-type">Ray2D</span>(transform.position, <span class="code-type">Vector2</span>.down);
+        <span class="code-type">Ray2D</span> rayNaname = <span class="code-keyword">new</span> <span class="code-type">Ray2D</span>(transform.position, <span class="code-keyword">new</span> <span class="code-type">Vector2</span>(<span class="code-number">-1</span>, <span class="code-number">-1</span>));
+        <span class="code-type">Ray2D</span> rayNaname2 = <span class="code-keyword">new</span> <span class="code-type">Ray2D</span>(transform.position, <span class="code-keyword">new</span> <span class="code-type">Vector2</span>(<span class="code-number">1</span>, <span class="code-number">-1</span>));
+        <span class="code-method">Debug.DrawRay</span>(rayNormal.origin, rayNormal.direction * <span class="code-number">0.3f</span>, <span class="code-type">Color</span>.red, <span class="code-number">0.05f</span>);
+        <span class="code-method">Debug.DrawRay</span>(rayNaname.origin, rayNaname.direction * <span class="code-number">0.5f</span>, <span class="code-type">Color</span>.red, <span class="code-number">0.05f</span>);
+        <span class="code-method">Debug.DrawRay</span>(rayNaname2.origin, rayNaname2.direction * <span class="code-number">0.5f</span>, <span class="code-type">Color</span>.red, <span class="code-number">0.05f</span>);
+        <span class="code-type">RaycastHit2D</span> hitNormal = <span class="code-type">Physics2D</span>.<span class="code-method">Raycast</span>(rayNormal.origin, rayNormal.direction, <span class="code-number">0.3f</span>, layerMask);
+        <span class="code-type">RaycastHit2D</span> hitNaname = <span class="code-type">Physics2D</span>.<span class="code-method">Raycast</span>(rayNaname.origin, rayNaname.direction, <span class="code-number">0.5f</span>, layerMask);
+        <span class="code-type">RaycastHit2D</span> hitNaname2 = <span class="code-type">Physics2D</span>.<span class="code-method">Raycast</span>(rayNaname2.origin, rayNaname2.direction, <span class="code-number">0.5f</span>, layerMask);
+        isGrounded = hitNormal.collider != <span class="code-keyword">null</span> || hitNaname.collider != <span class="code-keyword">null</span> || hitNaname2.collider != <span class="code-keyword">null</span>;
+
+        <span class="code-keyword">if</span> (isGrounded)
+        {
+            animator.<span class="code-method">SetBool</span>(<span class="code-string">"isGround"</span>, <span class="code-keyword">true</span>);
+
+            <span class="code-keyword">if</span> (isJumpTriggered)
+            {
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isGround"</span>, <span class="code-keyword">false</span>);
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+                rb.linearVelocity = <span class="code-keyword">new</span> <span class="code-type">Vector2</span>(rb.linearVelocity.x,
+                    playerJumpPower * <span class="code-type">GameManager</span>.Instance.PlayerVariablesMultiplierByMotivation);
+                isJumpTriggered = <span class="code-keyword">false</span>;
+            }
+        }
+
+        <span class="code-keyword">if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &gt; <span class="code-number">0</span>)
+        {
+            <span class="code-keyword">if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKey</span>(<span class="code-type">KeyCode</span>.RightArrow))
+            {
+                count++;
+                <span class="code-keyword">if</span> (count &gt;= <span class="code-number">10</span> &amp;&amp; isGrounded)
+                {
+                    RootSE.<span class="code-method">Play</span>(); <span class="code-comment">// 走るSE</span>
+                    count = <span class="code-number">0</span>;
+                }
+
+                transform.localScale = <span class="code-keyword">new</span> <span class="code-type">Vector3</span>(
+                    -<span class="code-type">Mathf</span>.<span class="code-method">Abs</span>(transform.localScale.x),
+                    transform.localScale.y, transform.localScale.z);
+
+                <span class="code-comment">// やる気の値に応じてアニメーションを切り替え</span>
+                <span class="code-keyword">if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &gt; <span class="code-number">50</span>)
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">true</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+                }
+                <span class="code-keyword">else if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &gt; <span class="code-number">10</span>)
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">true</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+                }
+                <span class="code-keyword">else</span>
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">true</span>);
+                }
+                rb.linearVelocity = <span class="code-keyword">new</span> <span class="code-type">Vector2</span>(
+                    playerSpeed * <span class="code-type">GameManager</span>.Instance.PlayerVariablesMultiplierByMotivation,
+                    rb.linearVelocity.y);
+            }
+            <span class="code-keyword">else if</span> (<span class="code-type">Input</span>.<span class="code-method">GetKey</span>(<span class="code-type">KeyCode</span>.LeftArrow))
+            {
+                count++;
+                <span class="code-keyword">if</span> (count &gt;= <span class="code-number">15</span> &amp;&amp; isGrounded)
+                {
+                    RootSE.<span class="code-method">Play</span>(); <span class="code-comment">// 走るSE</span>
+                    count = <span class="code-number">0</span>;
+                }
+
+                transform.localScale = <span class="code-keyword">new</span> <span class="code-type">Vector3</span>(
+                    <span class="code-type">Mathf</span>.<span class="code-method">Abs</span>(transform.localScale.x),
+                    transform.localScale.y, transform.localScale.z);
+
+                <span class="code-comment">// やる気の値に応じてアニメーションを切り替え</span>
+                <span class="code-keyword">if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &gt; <span class="code-number">50</span>)
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">true</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+                }
+                <span class="code-keyword">else if</span> (<span class="code-type">GameManager</span>.Instance.PlayerMotivation &gt; <span class="code-number">10</span>)
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">true</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+                }
+                <span class="code-keyword">else</span>
+                {
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                    animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">true</span>);
+                }
+                rb.linearVelocity = <span class="code-keyword">new</span> <span class="code-type">Vector2</span>(
+                    -playerSpeed * <span class="code-type">GameManager</span>.Instance.PlayerVariablesMultiplierByMotivation,
+                    rb.linearVelocity.y);
+            }
+            <span class="code-keyword">else</span>
+            {
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isFastRunning"</span>, <span class="code-keyword">false</span>);
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isRunning"</span>, <span class="code-keyword">false</span>);
+                animator.<span class="code-method">SetBool</span>(<span class="code-string">"isWalking"</span>, <span class="code-keyword">false</span>);
+            }
+        }
+    }
+
+    <span class="code-keyword">void</span> <span class="code-method">OnCollisionEnter2D</span>(<span class="code-type">Collision2D</span> collision)
+    {
+        <span class="code-keyword">if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"Oyatu"</span>))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivateValueChanger</span>(<span class="code-string">"Oyatu"</span>);
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"Smartphone"</span>))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivateValueChanger</span>(<span class="code-string">"Smartphone"</span>);
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"IdleFacePicture"</span>))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivateValueChanger</span>(<span class="code-string">"IdleFacePicture"</span>);
+        }
+    }
+
+    <span class="code-keyword">void</span> <span class="code-method">OnTriggerEnter2D</span>(<span class="code-type">Collider2D</span> collision)
+    {
+        <span class="code-comment">// --- メニュー選択の判定 ---</span>
+        <span class="code-keyword">if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"PlayGame"</span>))
+        {
+            isOntoPlay = <span class="code-keyword">true</span>;
+            isOntoHowToPlay = <span class="code-keyword">false</span>;
+            isOntoStory = <span class="code-keyword">false</span>;
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"LoadStory"</span>))
+        {
+            isOntoPlay = <span class="code-keyword">false</span>;
+            isOntoHowToPlay = <span class="code-keyword">false</span>;
+            isOntoStory = <span class="code-keyword">true</span>;
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"HowToPlay"</span>))
+        {
+            isOntoPlay = <span class="code-keyword">false</span>;
+            isOntoHowToPlay = <span class="code-keyword">true</span>;
+            isOntoStory = <span class="code-keyword">false</span>;
+        }
+        <span class="code-comment">// --- アイテム取得の判定 ---</span>
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"ItemShampoo"</span>))
+        {
+            <span class="code-keyword">if</span> (playerAttack != <span class="code-keyword">null</span>)
+            {
+                playerAttack.<span class="code-method">SwitchWeapon</span>(<span class="code-type">PlayerAttack.WeaponType</span>.SoapDispenser);
+            }
+            <span class="code-method">Destroy</span>(collision.gameObject);
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"ItemPerfume"</span>))
+        {
+            <span class="code-keyword">if</span> (playerAttack != <span class="code-keyword">null</span>)
+            {
+                playerAttack.<span class="code-method">SwitchWeapon</span>(<span class="code-type">PlayerAttack.WeaponType</span>.MirrorLight);
+            }
+            <span class="code-method">Destroy</span>(collision.gameObject);
+        }
+        <span class="code-comment">// --- その他のギミック判定 ---</span>
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"Bed"</span>))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivateValueChanger</span>(<span class="code-string">"Bed"</span>);
+        }
+        <span class="code-keyword">else if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"Death"</span>))
+        {
+            <span class="code-type">GameManager</span>.Instance.<span class="code-method">PlayerMotivateValueChanger</span>(<span class="code-string">"Death"</span>);
+        }
+
+        <span class="code-keyword">if</span> (collision.gameObject.<span class="code-method">CompareTag</span>(<span class="code-string">"Goal"</span>))
+        {
+            rb.constraints = <span class="code-type">RigidbodyConstraints2D</span>.FreezeAll;
+            scoreText.text = <span class="code-string">"ゲームクリア!\n 到達した高さ: "</span> + (<span class="code-keyword">int</span>)playerHeight
+                + <span class="code-string">"\n やる気: "</span> + <span class="code-type">GameManager</span>.Instance.PlayerMotivation
+                + <span class="code-string">"\n\n Escキーでタイトルへ"</span>;
+        }
+    }
+}</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <h3>解説</h3>
+                        <p>
+                            <span class="code-inline">Player</span> は、プレイヤーキャラクターの移動・ジャンプ・衝突判定・シーン遷移など、
+                            ゲームの中核となる操作ロジックをすべて管理するスクリプトです。
+                            <span class="code-inline">Update</span> でキー入力の検知とゲームオーバー判定を行い、
+                            <span class="code-inline">FixedUpdate</span> で物理演算に基づいた移動処理を実行しています。
+                        </p>
+                        <p>
+                            「やる気」という独自パラメータ（<span class="code-inline">GameManager.Instance.PlayerMotivation</span>）に応じて
+                            移動速度やアニメーションが3段階で変化する仕組みを実装しています。
+                            また、<span class="code-inline">OnCollisionEnter2D</span> と <span class="code-inline">OnTriggerEnter2D</span> で
+                            アイテム取得・メニュー選択・ギミック接触といった多様なイベントを処理しています。
+                        </p>
+                        <div class="code-highlights">
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">📐</span>
+                                <span class="highlight-text"><strong>Raycast による接地判定：</strong>真下・左斜め下・右斜め下の3方向にRayを飛ばすことで、足場の端でもジャンプ判定が正しく行われるよう工夫しました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🎭</span>
+                                <span class="highlight-text"><strong>やる気連動アニメーション：</strong>「やる気」の値に応じて「高速走り」「通常走り」「歩き」の3段階でアニメーションを切り替え、ゲーム状態を視覚的に表現しました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">🎮</span>
+                                <span class="highlight-text"><strong>タイトル画面のメニュー選択：</strong>キャラクターを操作して特定エリアに入ることでシーンを遷移する、ゲームらしいメニュー選択方式を実装しました。</span>
+                            </div>
+                            <div class="code-highlight-item">
+                                <span class="highlight-icon">⚡</span>
+                                <span class="highlight-text"><strong>Update と FixedUpdate の使い分け：</strong>入力検知は <span class="code-inline">Update</span> で、物理演算を伴う移動処理は <span class="code-inline">FixedUpdate</span> で行い、安定した動作を実現しました。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -100,6 +446,12 @@
             document.getElementById('mainImage').src = thumb.src;
             document.querySelectorAll('.gallery-thumbs img').forEach(img => img.classList.remove('active'));
             thumb.classList.add('active');
+        }
+
+        function toggleCodeBlock(event) {
+            const header = event.currentTarget;
+            const wrapper = header.closest('.code-block-wrapper');
+            wrapper.classList.toggle('collapsed');
         }
     </script>
 </body>
